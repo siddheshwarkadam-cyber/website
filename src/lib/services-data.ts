@@ -36,6 +36,8 @@ export type ServiceStep = {
   body?: string;
   glyph?: GlyphName;
   art?: IllustrationName;
+  /** A real/supplied render instead of a glyph or illustration — see VisualPipeline. */
+  media?: MediaId;
 };
 
 export type ServiceCard = {
@@ -378,10 +380,10 @@ export const SERVICES: ServiceEntry[] = [
     ],
     workflowLabel: "Our workflow",
     workflow: [
-      { title: "Structure Preparation", body: "Target and partner are processed, with the binding site defined where applicable.", glyph: "prep" },
-      { title: "Candidate Pose Generation", body: "Binding orientations are sampled and evaluated with the selected docking method.", glyph: "dock" },
-      { title: "Pose Selection", body: "Representative poses are shortlisted by score, clustering, and structural assessment.", glyph: "select" },
-      { title: "Interface Characterization", body: "Interface residues and predicted interactions of the selected complex are characterised.", glyph: "interface" },
+      { title: "Structure Preparation", body: "Target and partner are processed, with the binding site defined where applicable.", glyph: "prep", media: "dockWorkflowPrep" },
+      { title: "Candidate Pose Generation", body: "Binding orientations are sampled and evaluated with the selected docking method.", glyph: "dock", media: "dockWorkflowGenerate" },
+      { title: "Pose Selection", body: "Representative poses are shortlisted by score, clustering, and structural assessment.", glyph: "select", media: "dockWorkflowSelect" },
+      { title: "Interface Characterization", body: "Interface residues and predicted interactions of the selected complex are characterised.", glyph: "interface", media: "dockWorkflowInterface" },
     ],
     workflowClosing: "From predicted binding poses to structural insights for drug discovery.",
     closingFlow: {

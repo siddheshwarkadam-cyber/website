@@ -365,6 +365,9 @@ function renderSection(key: SectionKey, service: ServiceEntry): React.ReactNode 
         <Section key={key} band="tint">
           <SectionHead title={service.workflowLabel ?? "Our workflow"} kicker={`${service.workflow.length} stages`} />
           <VisualPipeline steps={service.workflow} />
+          {service.workflow.some((s) => s.media && MEDIA[s.media].kind === "render") && (
+            <p className="mt-4 text-[0.74rem] text-ink-muted">Illustrative renders, not outputs from an actual run.</p>
+          )}
           {service.workflowClosing && (
             <p className="mt-4 lg:mt-12 border-t border-black/10 pt-8 font-display text-[clamp(1.25rem,2.6vw,1.8rem)] leading-[1.25] tracking-tight text-ink max-w-[40ch]">
               {service.workflowClosing}

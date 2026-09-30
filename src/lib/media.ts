@@ -236,6 +236,53 @@ export const MEDIA = {
     license: "Project-owned",
     usedOn: ["/services/biomarker-identification (Sample outputs)"],
   },
+  /* Docking workflow renders — supplied by IndiskaAI as the "Our workflow"
+     stage images, one per stage. Real PDB 1HSG structure (HIV-1 protease),
+     not a specific pose result; illustrative of each stage's kind of output. */
+  dockWorkflowPrep: {
+    src: "/generated/docking-workflow-structure-preparation.webp",
+    kind: "render",
+    alt: "Two protease chains (navy and pale blue) with a gold search-box marking the defined binding site",
+    width: 1024,
+    height: 1024,
+    credit: "Illustrative render",
+    source: "Supplied by IndiskaAI (docking workflow stage image)",
+    license: "Project-owned — confirm usage rights for AI-generated imagery",
+    usedOn: ["/services/molecular-docking (Our workflow)"],
+  },
+  dockWorkflowGenerate: {
+    src: "/generated/docking-workflow-pose-generation.webp",
+    kind: "render",
+    alt: "Multiple overlapping candidate ligand poses, each a different colour, sampled inside a protein binding pocket",
+    width: 1024,
+    height: 1024,
+    credit: "Illustrative render",
+    source: "Supplied by IndiskaAI (docking workflow stage image)",
+    license: "Project-owned — confirm usage rights for AI-generated imagery",
+    usedOn: ["/services/molecular-docking (Our workflow)"],
+  },
+  dockWorkflowSelect: {
+    src: "/generated/docking-workflow-pose-selection.webp",
+    kind: "render",
+    alt: "A single selected ligand pose, in yellow, settled into the binding pocket after the candidate poses were narrowed down",
+    width: 1024,
+    height: 1024,
+    credit: "Illustrative render",
+    source: "Supplied by IndiskaAI (docking workflow stage image)",
+    license: "Project-owned — confirm usage rights for AI-generated imagery",
+    usedOn: ["/services/molecular-docking (Our workflow)"],
+  },
+  dockWorkflowInterface: {
+    src: "/generated/docking-workflow-interface-characterization.webp",
+    kind: "render",
+    alt: "The selected ligand pose with contacting pocket residues shown as sticks and hydrogen bonds marked as dashed gold lines",
+    width: 1024,
+    height: 1024,
+    credit: "Illustrative render",
+    source: "Supplied by IndiskaAI (docking workflow stage image)",
+    license: "Project-owned — confirm usage rights for AI-generated imagery",
+    usedOn: ["/services/molecular-docking (Our workflow)"],
+  },
 } as const satisfies Record<string, MediaAsset>;
 
 export type MediaId = keyof typeof MEDIA;
