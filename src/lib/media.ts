@@ -214,6 +214,28 @@ export const MEDIA = {
     license: "Project-owned — confirm usage rights for AI-generated imagery",
     usedOn: ["/services/antibody-discovery (Epitope Identification card)"],
   },
+  biomarkerVolcanoScene: {
+    src: "/generated/biomarker-volcano.webp",
+    kind: "render",
+    alt: "Volcano plot of log2 fold change against statistical significance, with the top up- and down-regulated genes labelled",
+    width: 2000,
+    height: 1700,
+    credit: "Illustrative chart, simulated data",
+    source: "Supplied by IndiskaAI",
+    license: "Project-owned",
+    usedOn: ["/services/biomarker-identification (Sample outputs)"],
+  },
+  biomarkerHeatmapScene: {
+    src: "/generated/biomarker-heatmap.webp",
+    kind: "render",
+    alt: "Expression heatmap of the top up- and down-regulated genes across every sample, grouped and coloured by z-scored expression",
+    width: 1600,
+    height: 2000,
+    credit: "Illustrative chart, simulated data",
+    source: "Supplied by IndiskaAI",
+    license: "Project-owned",
+    usedOn: ["/services/biomarker-identification (Sample outputs)"],
+  },
 } as const satisfies Record<string, MediaAsset>;
 
 export type MediaId = keyof typeof MEDIA;

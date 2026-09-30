@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
 import MotionStory from "@/components/science/MotionStory";
-import { VolcanoPlot, ExpressionHeatmap } from "@/components/science/BiomarkerPlots";
 import { GlyphTile, type GlyphName } from "@/components/science/Glyphs";
 import { Section, SectionHead, ServiceCTA } from "@/components/service/ServiceSections";
 import { getService } from "@/lib/services-data";
@@ -20,61 +20,9 @@ const WHY_QUESTIONS = ["Who has it?", "Who will progress?", "Who will respond?"]
 const FUNNEL: { n: string; title: string; body: string; glyph: GlyphName }[] = [
   { n: "1", title: "Input data", body: "Sequencing reads from patient samples", glyph: "fastq" },
   { n: "2", title: "Signal", body: "Genes whose activity differs between patient groups", glyph: "signal" },
-  { n: "3", title: "Processing", body: "Noise filtered out, the signal tested and modelled", glyph: "qc" },
+  { n: "3", title: "Processing", body: "Noise filtered out, the signal tested and modelled", glyph: "classify" },
   { n: "4", title: "Marker", body: "A small set of genes that tracks the outcome", glyph: "shortlist" },
-  { n: "5", title: "Decision", body: "Patients stratified, trials designed, treatment tracked", glyph: "handoff" },
-];
-
-type Assist = {
-  marker: string;
-  question: string;
-  howWeAssist: string;
-  studyNeeds: string;
-  scope: "Full pipeline" | "Candidate genes";
-  glyph: GlyphName;
-};
-
-const ASSIST: Assist[] = [
-  {
-    marker: "Prognostic",
-    question: "How will patients progress?",
-    howWeAssist: "We take your cohort through the full pipeline to a compact gene signature associated with survival, and a risk score for each patient.",
-    studyNeeds: "RNA-seq samples with survival time and event status for each patient.",
-    scope: "Full pipeline",
-    glyph: "prognostic",
-  },
-  {
-    marker: "Diagnostic",
-    question: "Is the disease present?",
-    howWeAssist: "We compare diseased and healthy samples to identify candidate genes that separate them, with pathway context.",
-    studyNeeds: "RNA-seq samples from disease and control groups.",
-    scope: "Candidate genes",
-    glyph: "diagnostic",
-  },
-  {
-    marker: "Predictive",
-    question: "Who will respond to treatment?",
-    howWeAssist: "We compare responders with non-responders to identify candidate genes linked to treatment response.",
-    studyNeeds: "Pre-treatment samples with known response status.",
-    scope: "Candidate genes",
-    glyph: "predictive",
-  },
-  {
-    marker: "Response",
-    question: "Is the treatment having an effect?",
-    howWeAssist: "We compare treated and untreated samples to show which genes and pathways the treatment changes.",
-    studyNeeds: "Treated and untreated (or before and after) samples.",
-    scope: "Candidate genes",
-    glyph: "pharmacodynamic",
-  },
-  {
-    marker: "Monitoring",
-    question: "How is the disease changing over time?",
-    howWeAssist: "We compare samples across time points to identify genes whose activity follows disease course.",
-    studyNeeds: "Samples collected at two or more time points.",
-    scope: "Candidate genes",
-    glyph: "monitoring",
-  },
+  { n: "5", title: "Decision", body: "Patients stratified, trials designed, treatment tracked", glyph: "objective" },
 ];
 
 type Package = {
@@ -292,75 +240,6 @@ export default function BiomarkerPage() {
         </div>
       </Section>
 
-      {/* How we can assist your research */}
-      <Section>
-        <SectionHead
-          title="How we can assist your research"
-          kicker="For your research"
-          lede="Different research questions call for different markers. Tell us what you need to find, and we shape the analysis around your study design."
-        />
-        <div className="hidden md:block overflow-hidden rounded-2xl border border-black/10">
-          <table className="w-full text-left">
-            <caption className="sr-only">Biomarker types we support, how we assist, what the study needs, and the scope of work</caption>
-            <thead className="bg-cream-200/60">
-              <tr>
-                <th scope="col" className="w-[16%] px-5 py-3.5 kicker text-ink">Marker you need</th>
-                <th scope="col" className="w-[34%] px-5 py-3.5 kicker text-ink">How we assist</th>
-                <th scope="col" className="w-[32%] px-5 py-3.5 kicker text-ink">What your study needs</th>
-                <th scope="col" className="px-5 py-3.5 kicker text-ink">Scope</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ASSIST.map((a) => (
-                <tr key={a.marker} className="border-t border-black/[0.06] bg-cream-50/60 align-top transition-colors hover:bg-cream-50">
-                  <th scope="row" className="px-5 py-4 font-normal">
-                    <span className="flex items-center gap-3">
-                      <GlyphTile name={a.glyph} size="sm" tone="navy" />
-                      <span>
-                        <span className="block font-display text-[1.05rem] tracking-tightest text-ink">{a.marker}</span>
-                        <span className="block text-[0.78rem] text-ink-muted">{a.question}</span>
-                      </span>
-                    </span>
-                  </th>
-                  <td className="px-5 py-4 text-ink-soft text-[0.9rem] leading-[1.5]">{a.howWeAssist}</td>
-                  <td className="px-5 py-4 text-ink-soft text-[0.9rem] leading-[1.5]">{a.studyNeeds}</td>
-                  <td className="px-5 py-4">
-                    <span className={`inline-flex rounded-full px-3 py-1 text-[0.74rem] font-medium ${a.scope === "Full pipeline" ? "bg-gold/20 text-ink" : "bg-navy/10 text-navy"}`}>
-                      {a.scope}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="md:hidden border-t border-black/10">
-          {ASSIST.map((a) => (
-            <details key={a.marker} className="group border-b border-black/10">
-              <summary className="flex cursor-pointer list-none items-center gap-3 py-4 [&::-webkit-details-marker]:hidden">
-                <GlyphTile name={a.glyph} size="sm" tone="navy" />
-                <span className="flex-1">
-                  <span className="block font-display text-[1.05rem] tracking-tightest text-ink">{a.marker}</span>
-                  <span className="block text-[0.78rem] text-ink-muted">{a.question}</span>
-                </span>
-                <span aria-hidden className="text-navy text-xl leading-none transition-transform duration-300 group-open:rotate-45">+</span>
-              </summary>
-              <div className="pb-4 pl-[3.25rem] space-y-2">
-                <p className="text-ink-soft text-[0.9rem] leading-[1.5]">{a.howWeAssist}</p>
-                <p className="text-ink-muted text-[0.82rem] leading-[1.5]">Needs: {a.studyNeeds}</p>
-                <span className={`inline-flex rounded-full px-3 py-1 text-[0.74rem] font-medium ${a.scope === "Full pipeline" ? "bg-gold/20 text-ink" : "bg-navy/10 text-navy"}`}>
-                  {a.scope}
-                </span>
-              </div>
-            </details>
-          ))}
-        </div>
-        <p className="mt-6 text-ink-soft text-[0.9rem]">
-          New to biomarker types? Read our guide to biomarker types on the{" "}
-          <Link href="/research" className="text-navy underline underline-offset-2 hover:text-ink">Research page</Link>.
-        </p>
-      </Section>
-
       {/* What we provide */}
       <Section band="tint">
         <SectionHead title="What we provide" kicker="Developed and operated in-house" lede="Take the complete biomarker discovery service, or start from whichever stage your data is at." />
@@ -409,7 +288,15 @@ export default function BiomarkerPage() {
         <SectionHead title="Results you can see, not just read" kicker="Sample outputs" lede="Every expression analysis comes with clear figures, so you can see what changed and where to look next." />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           <figure className="rounded-2xl border border-black/[0.07] bg-cream-50 p-6">
-            <VolcanoPlot />
+            <div className="relative aspect-[10/8.5] overflow-hidden rounded-xl">
+              <Image
+                src="/generated/biomarker-volcano.webp"
+                alt="Volcano plot of log2 fold change against statistical significance, with the top up- and down-regulated genes labelled"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-contain"
+              />
+            </div>
             <figcaption className="mt-4">
               <div className="font-display text-[1.05rem] tracking-tightest text-ink">Volcano plot</div>
               <p className="mt-1 text-ink-soft text-[0.86rem] leading-[1.5]">
@@ -419,7 +306,15 @@ export default function BiomarkerPage() {
             </figcaption>
           </figure>
           <figure className="rounded-2xl border border-black/[0.07] bg-cream-50 p-6">
-            <ExpressionHeatmap />
+            <div className="relative aspect-[4/5] overflow-hidden rounded-xl">
+              <Image
+                src="/generated/biomarker-heatmap.webp"
+                alt="Expression heatmap of the top up- and down-regulated genes across every sample, grouped and coloured by z-scored expression"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-contain"
+              />
+            </div>
             <figcaption className="mt-4">
               <div className="font-display text-[1.05rem] tracking-tightest text-ink">Expression heatmap</div>
               <p className="mt-1 text-ink-soft text-[0.86rem] leading-[1.5]">
