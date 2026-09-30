@@ -17,7 +17,7 @@ export default function FounderSpotlight() {
           >
             <div className="relative aspect-[4/5] max-w-[360px] overflow-hidden rounded-2xl border border-black/5">
               <Image
-                src="/team/jaspal-patil.webp"
+                src="/team/jaspal-patil-sketch.webp"
                 alt="Jaspal Patil, Founder & CEO of IndiskaAI"
                 fill
                 sizes="(max-width: 1024px) 60vw, 320px"
