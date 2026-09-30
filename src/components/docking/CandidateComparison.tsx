@@ -10,7 +10,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 
 const CANDIDATES = [
-  { name: "Parent candidate", short: "Parent", color: "#1E5BA8", value: 0.46, spread: 0.07 },
+  { name: "Parent candidate", short: "Parent", color: "#1E5BA8", value: 0.3, spread: 0.07 },
   { name: "Benchmark candidate", short: "Benchmark", color: "#6B6B6B", value: 0.6, spread: 0.06, dashed: true },
   { name: "AI-assisted candidate 1", short: "AI-assisted 1", color: "#D9A91A", value: 0.86, spread: 0.045 },
   { name: "AI-assisted candidate 2", short: "AI-assisted 2", color: "#7FA3D1", value: 0.76, spread: 0.055 },
