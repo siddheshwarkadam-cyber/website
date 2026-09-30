@@ -31,7 +31,7 @@ Pages follow SHOW → EXPLAIN → GUIDE: one-sentence copy, every card/step carr
 - "What comes in → process → what goes out" is the shared `InputsOutputs` component (ServiceSections.tsx) — use it on every service page rather than a bespoke deliverables block.
 - Oncology copy: findings "support review by qualified clinical professionals"; never "diagnoses" or "determines treatment"; tumour-only calls are "likely somatic"; every capability is qualified "where supported by panel design and data quality".
 - `PendingContent` wraps copy that states an unconfirmed operational/legal/clinical commitment (turnaround, data protection, ownership, clinical use). Shown in dev, stripped from production builds. Remove the wrapper only once the business confirms the wording.
-- No submission backend exists for the Partner or WES request forms, and there are no Terms/Privacy pages yet.
+- The Partner form (`/partner`) submits to `src/app/api/partner/route.ts`, which sends through Resend (`RESEND_API_KEY`, `CONTACT_FROM_EMAIL`, `CONTACT_TO_EMAIL` in `.env.example`); it reports "not configured yet" rather than a false success when those are unset. The WES request form still has no submission backend. There are no Terms/Privacy pages yet.
 - Third-party video only via `ExternalVideoCard` (click-to-load youtube-nocookie facade, visible credit + source link), and only for videos whose owner allows embedding. None are configured yet.
 
 ## On Ice / Post-Launch
@@ -42,7 +42,7 @@ Pages follow SHOW → EXPLAIN → GUIDE: one-sentence copy, every card/step carr
 **Re-enable:** Uncomment the import and `<BindingSection />` placement in `src/app/(site)/page.tsx` (placed between Capabilities and the divider before Approach).
 **State at pause:**
 - 320vh sticky scroll-scrubbed section, antigen + antibody dock vertically (y +3.5 → +0.2 and -3.5 → -0.2) and meet centered around y = 0.
-- Lock + glow timing aligned to "Step 03 — Bound" reaching ~50% opacity (scrollYProgress ≈ 0.66).
+- Lock + glow timing aligned to "Step 03: Bound" reaching ~50% opacity (scrollYProgress ≈ 0.66).
 - Responsive x-shift via `useThree().viewport.aspect` so the complex sits on viewport-right on landscape, centered on portrait.
 - Geometries already optimized (low-poly icosahedrons, flatShading, reduced cylinder segments).
 **Open considerations before re-enabling:**
