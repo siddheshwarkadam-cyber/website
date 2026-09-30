@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type MutableRefObject, type RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { loadPdb, disposeTree } from "./pdb";
 import { DOCK_BUILDERS, DOCK_PDB, type DockScene, type DockSceneKey } from "./dockScenes";
+
+export type Drag = { yaw: number; pitch: number };
 
 type Props = {
   scene: DockSceneKey;
@@ -13,11 +15,18 @@ type Props = {
   running: boolean;
   layer: RefObject<HTMLDivElement>;
   setChip: (t: string) => void;
+  drag: MutableRefObject<Drag>;
+  invalidateRef: MutableRefObject<(() => void) | null>;
 };
 
-function Stage({ built, reduced }: { built: DockScene; reduced: boolean }) {
+function Stage({ built, reduced, drag, invalidateRef }: { built: DockScene; reduced: boolean; drag: MutableRefObject<Drag>; invalidateRef: MutableRefObject<(() => void) | null> }) {
   const { camera, size, invalidate } = useThree();
   const t = useRef(reduced ? built.still : 0);
+
+  useEffect(() => {
+    invalidateRef.current = invalidate;
+    return () => { invalidateRef.current = null; };
+  }, [invalidate, invalidateRef]);
 
   // Frame the whole structure, as the source pages do on resize.
   useLayoutEffect(() => {
@@ -35,14 +44,14 @@ function Stage({ built, reduced }: { built: DockScene; reduced: boolean }) {
 
   useFrame((_, dt) => {
     if (!reduced) t.current += Math.min(dt, 0.05);
-    built.update(t.current, camera, size.width, size.height);
+    built.update(t.current, camera, size.width, size.height, drag.current.yaw, drag.current.pitch);
   });
 
   return <primitive object={built.root} />;
 }
 
 /** One canvas per docking scene; DockVisual decides when it exists. */
-export default function DockCanvas({ scene, lite, reduced, running, layer, setChip }: Props) {
+export default function DockCanvas({ scene, lite, reduced, running, layer, setChip, drag, invalidateRef }: Props) {
   const [built, setBuilt] = useState<DockScene | null>(null);
 
   useEffect(() => {
@@ -75,7 +84,7 @@ export default function DockCanvas({ scene, lite, reduced, running, layer, setCh
       <hemisphereLight args={[0xffffff, 0xb8ad96, 2.2]} />
       <directionalLight position={[-0.5, 1, 1.2]} intensity={3} />
       {!lite && <directionalLight position={[1, -0.3, -1]} intensity={0.8} color={0xfff4de} />}
-      {built && <Stage built={built} reduced={reduced} />}
+      {built && <Stage built={built} reduced={reduced} drag={drag} invalidateRef={invalidateRef} />}
     </Canvas>
   );
 }

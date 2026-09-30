@@ -25,7 +25,8 @@ export type DockScene = {
   camY: number;
   /** A representative moment for the reduced-motion still. */
   still: number;
-  update: (t: number, cam: THREE.Camera, w: number, h: number) => void;
+  /** `yaw`/`pitch` are the viewer's drag offset, added on top of the scene's own idle motion. */
+  update: (t: number, cam: THREE.Camera, w: number, h: number, yaw: number, pitch: number) => void;
 };
 
 type Data = ReturnType<typeof parse>;
@@ -144,7 +145,7 @@ function pose(data: Data, ov: Overlay): DockScene {
 
   return {
     root, rad, camY: 0.08, still: 9,
-    update(t, cam, w, h) {
+    update(t, cam, w, h, yaw, pitch) {
       const u = t % T;
       let k = 0;
       while (k < K.length - 2 && u > K[k + 1][0]) k++;
@@ -161,7 +162,8 @@ function pose(data: Data, ov: Overlay): DockScene {
       else if (u < 6.4) { const i = u < 2.9 ? 0 : u < 4.6 ? 1 : 2; ov.setChip(`Pose ${i + 1} of 20 · docking score ${CFG.poses[i]} (illustrative)`); }
       else if (u < 11.5) ov.setChip(`Top-ranked pose · docking score ${CFG.top} (illustrative) · ${HBs.length} H-bond${HBs.length === 1 ? "" : "s"} · ${pocket.size} pocket residues`);
       else ov.setChip("Real structure · PDB 1HSG");
-      root.rotation.y = t * CFG.spin;
+      root.rotation.y = t * CFG.spin + yaw;
+      root.rotation.x = pitch;
       root.updateMatrixWorld(true);
       HBs.forEach((x) => place(x.lab!, x.anchor!, g, cam, w, h, dock > 0.6, -rad * 0.35));
     },
@@ -256,7 +258,7 @@ function iface(data: Data, ov: Overlay): DockScene {
 
   return {
     root, rad, camY: 0.08, still: 6,
-    update(t, cam, w, hh) {
+    update(t, cam, w, hh, yaw, pitch) {
       const u = t % T;
       const sep = u < 3.5 ? 1 - ease(u / 3.5) : u > 10.3 ? ease(seg(u, 10.3, 12)) : 0, d = CFG.separation * sep;
       gB.quaternion.setFromAxisAngle(ax, 1.1 * sep);
@@ -267,8 +269,8 @@ function iface(data: Data, ov: Overlay): DockScene {
       stickMats.forEach((m) => (m.opacity = 0.08 + 0.92 * h));
       hbMat.opacity = h;
       ov.setChip(u < 3.5 ? `${CFG.nameB} approaching ${CFG.nameA}` : h > 0.5 ? `${nIf} interface residues (≤ ${CFG.cut} Å) · ${HBs.length} H-bonds / salt bridges (≤ ${CFG.hb} Å)` : "Real structure · PDB 1BRS");
-      root.rotation.y = 0.55 * Math.sin(t * CFG.spin);
-      root.rotation.x = 0.12 * Math.sin(t * 0.17);
+      root.rotation.y = 0.55 * Math.sin(t * CFG.spin) + yaw;
+      root.rotation.x = 0.12 * Math.sin(t * 0.17) + pitch;
       root.updateMatrixWorld(true);
       const maxShown = w < 520 ? 1 : CFG.maxLabels; // narrow cards: one label, so the complex stays visible
       labs.forEach((x, i) => place(x.lab!, x.anchor!, g, cam, w, hh, h > 0.6 && i < maxShown, -rad * 0.4));
@@ -340,7 +342,7 @@ function residuesScene(data: Data, ov: Overlay): DockScene {
 
   return {
     root, rad, camY: 0.06, still: intro + CFG.dwell * 0.45,
-    update(t, cam, w, hh) {
+    update(t, cam, w, hh, yaw, pitch) {
       const h = ease(seg(t, 0.2, intro));
       if (Math.abs(h - lastH) >= 0.01) { lastH = h; blendRibbons(ribs, h); }
       let k = -1, ph = 0;
@@ -350,8 +352,8 @@ function residuesScene(data: Data, ov: Overlay): DockScene {
       if (k !== cur) { if (cur >= 0) pairs[cur].dash!.visible = false; cur = k; if (k >= 0) { pairs[k].dash!.visible = true; lab.textContent = pairs[k].txt!; } }
       dashMat.opacity = pulse;
       ov.setChip(k < 0 ? `Real structure · PDB 3HFM · ${nIf} interface residues` : `Contact ${k + 1} of ${pairs.length} · ${pairs[k].polar ? "polar contact (H-bond / salt bridge)" : "van der Waals contact"}`);
-      root.rotation.y = CFG.sway * Math.sin(t * 0.2);
-      root.rotation.x = 0.1 * Math.sin(t * 0.15);
+      root.rotation.y = CFG.sway * Math.sin(t * 0.2) + yaw;
+      root.rotation.x = 0.1 * Math.sin(t * 0.15) + pitch;
       root.updateMatrixWorld(true);
       if (k >= 0) place(lab, pairs[k].anchor!, g, cam, w, hh, ph > 0.06 && ph < 0.88, -rad * 0.5);
       else lab.style.opacity = "0";

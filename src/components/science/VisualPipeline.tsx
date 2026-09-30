@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { ILLUSTRATIONS, type IllustrationName } from "./Illustrations";
 import { GlyphTile, type GlyphName } from "./Glyphs";
+import { MEDIA, type MediaId } from "@/lib/media";
 
 export type PipelineStep = {
   title: string;
@@ -10,6 +11,8 @@ export type PipelineStep = {
   glyph?: GlyphName;
   /** A full illustration instead of a glyph — for pipelines that are the page's centrepiece. */
   art?: IllustrationName;
+  /** A real/supplied render instead of a glyph or illustration — takes the same large tile as `art`. */
+  media?: MediaId;
 };
 
 /**
@@ -28,7 +31,7 @@ export default function VisualPipeline({
   vertical?: boolean;
 }) {
   const reduceMotion = useReducedMotion();
-  const hasArt = !vertical && steps.some((s) => s.art);
+  const hasArt = !vertical && steps.some((s) => s.art || s.media);
   const dark = tone === "dark";
   const lg = (cls: string) => (vertical ? "" : cls);
 
@@ -43,6 +46,8 @@ export default function VisualPipeline({
     >
       {steps.map((step, i) => {
         const Art = !vertical && step.art ? ILLUSTRATIONS[step.art] : null;
+        const media = !vertical && step.media ? MEDIA[step.media] : null;
+        const hasVisual = !!(Art || media);
         const last = i === steps.length - 1;
         return (
           <motion.li
@@ -63,10 +68,15 @@ export default function VisualPipeline({
               />
             )}
 
-            {Art ? (
+            {hasVisual ? (
               <div className="hidden lg:block">
                 <div className={`relative overflow-hidden rounded-2xl border p-3 ${dark ? "border-cream-100/10 bg-cream-100" : "border-black/5 bg-cream-50"}`}>
-                  <Art />
+                  {Art ? (
+                    <Art />
+                  ) : media ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={media.src} alt={media.alt} width={media.width} height={media.height} loading="lazy" decoding="async" className="aspect-square w-full rounded-xl object-cover" />
+                  ) : null}
                   <span className="absolute left-3 top-3 rounded-full bg-ink px-2 py-0.5 text-[0.62rem] font-medium tabular-nums text-cream-100">
                     {String(i + 1).padStart(2, "0")}
                   </span>
@@ -79,7 +89,7 @@ export default function VisualPipeline({
 
             {/* w-fit: in the desktop column layout this wrapper would otherwise
                 stretch to the full column, pinning the badge to the column's edge. */}
-            <div className={`relative z-10 w-fit shrink-0 self-start ${Art ? "lg:hidden" : ""}`}>
+            <div className={`relative z-10 w-fit shrink-0 self-start ${hasVisual ? "lg:hidden" : ""}`}>
               <div className="relative w-fit">
                 <GlyphTile name={step.glyph ?? "target"} tone={dark ? "cream" : "navy"} />
                 <span className={`absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[0.6rem] font-medium tabular-nums ${dark ? "bg-gold text-ink" : "bg-ink text-cream-100"}`}>
