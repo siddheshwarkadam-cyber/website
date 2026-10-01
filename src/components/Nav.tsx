@@ -54,7 +54,7 @@ const links: NavLink[] = [
     groups: [
       {
         items: [
-          { label: "Team", href: "/team" },
+          // Team page hidden for now — see src/app/(site)/team/page.tsx.
           { label: "Future", href: "/future" },
         ],
       },
@@ -83,7 +83,7 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-/** A parent nav item reads as active if the current page is one of its children too (e.g. /team under About Us). */
+/** A parent nav item reads as active if the current page is one of its children too (e.g. /future under About Us). */
 function isActiveGroup(pathname: string, link: NavLink) {
   if (isActive(pathname, link.href)) return true;
   return (link.groups ?? []).some((g) =>
