@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
 import FounderSpotlight from "@/components/FounderSpotlight";
 
@@ -9,7 +10,9 @@ export const metadata: Metadata = {
     "Leadership team and the data scientists, bioinformaticians, and engineers behind IndiskaAI.",
 };
 
+// Page hidden for now — content kept intact below. Remove this line to re-enable.
 export default function TeamPage() {
+  notFound();
   return (
     <main className="relative">
       <PageHeader

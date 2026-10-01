@@ -22,7 +22,7 @@ const routes: { path: string; priority: number; changeFrequency: MetadataRoute.S
   { path: "/blog", priority: 0.6, changeFrequency: "weekly" },
   { path: "/updates", priority: 0.6, changeFrequency: "weekly" },
   { path: "/about", priority: 0.6, changeFrequency: "monthly" },
-  { path: "/team", priority: 0.8, changeFrequency: "monthly" },
+  // Team page hidden for now — see src/app/(site)/team/page.tsx.
   { path: "/future", priority: 0.7, changeFrequency: "monthly" },
   { path: "/careers", priority: 0.8, changeFrequency: "weekly" },
   { path: "/partner", priority: 0.7, changeFrequency: "monthly" },

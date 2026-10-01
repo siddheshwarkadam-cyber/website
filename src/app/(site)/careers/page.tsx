@@ -138,7 +138,7 @@ export default async function CareersPage() {
               Email {careersEmail}
               <span className="cta-arrow">→</span>
             </a>
-            <a href="/team" className="cta cta-ghost">Meet the team</a>
+            {/* "Meet the team" CTA hidden while /team is — see src/app/(site)/team/page.tsx. */}
           </div>
         </div>
       </section>
